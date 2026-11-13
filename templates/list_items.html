@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Select Companies</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0E1F1A;
+    --panel: #123027;
+    --panel-edge: #1D4A3B;
+    --text: #EAF3ED;
+    --muted: #8FB4A4;
+    --accent: #E8B36A;
+    --accent-dim: rgba(232,179,106,0.18);
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin: 0;
+    min-height: 100vh;
+    padding: 56px 24px;
+    display: flex;
+    justify-content: center;
+    background:
+      radial-gradient(circle at 20% 10%, rgba(232,179,106,0.06), transparent 45%),
+      radial-gradient(circle at 85% 85%, rgba(31,90,70,0.35), transparent 50%),
+      var(--bg);
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+  }
+
+  .wrap{
+    width: 100%;
+    max-width: 640px;
+  }
+
+  .eyebrow{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .eyebrow::before{
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-dim);
+  }
+
+  h1{
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: clamp(24px, 4vw, 30px);
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+  }
+
+  p.sub{
+    color: var(--muted);
+    font-size: 14px;
+    margin: 0 0 32px;
+  }
+
+  #my-list-container{
+    list-style: none;
+    margin: 0 0 36px;
+    padding: 0;
+  }
+
+  .company-widget-card{
+    background: linear-gradient(180deg, #143528, #0F281F);
+    border: 1px solid var(--panel-edge);
+    border-radius: 12px;
+    padding: 0 18px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    height: 4em;
+    transition: border-color 0.15s ease;
+  }
+
+  .company-widget-card:hover{
+    border-color: rgba(232,179,106,0.4);
+  }
+
+  .company-widget-text{
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .requirements{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 36px;
+  }
+
+  .req-row{
+    position: relative;
+  }
+
+  .req-row input[type="checkbox"]{
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+
+  .req-row label{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 1px solid var(--panel-edge);
+    border-radius: 10px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+
+  .req-row label::before{
+    content: "";
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    border-radius: 5px;
+    border: 1.5px solid var(--muted);
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+
+  .req-row input[type="checkbox"]:checked + label{
+    border-color: rgba(232,179,106,0.5);
+    background: rgba(232,179,106,0.06);
+  }
+
+  .req-row input[type="checkbox"]:checked + label::before{
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: inset 0 0 0 3px #143528;
+  }
+
+  .req-row input[type="checkbox"]:focus-visible + label{
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px 20px;
+    border-radius: 10px;
+    border: none;
+    background: var(--accent);
+    color: var(--bg);
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    box-shadow: 0 10px 24px -10px rgba(232,179,106,0.55);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  button:hover{
+    transform: translateY(-1px);
+    box-shadow: 0 14px 28px -10px rgba(232,179,106,0.7);
+  }
+
+  button:active{
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    button, .company-widget-card, .req-row label{ transition: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="eyebrow">Selection</div>
+    <h1>Refine your queue</h1>
+    <p class="sub">Review the companies below, then tell us what you need for each.</p>
+
+    <!-- 1. The backend loop generates hidden HTML data blocks -->
+    <div id="raw-data-source" style="display: none;">
+        {% if items %}
+            {% for item in items %}
+                <span class="backend-item">{{ item }}</span>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- 2. The target container where your widgets will go -->
+    <ul id="my-list-container"></ul>
+
+    <div class="requirements">
+      <div class="req-row">
+        <input type="checkbox" name="request" id="list" value="list">
+        <label for="list">List of companies</label>
+      </div>
+      <div class="req-row">
+        <input type="checkbox" name="request" id="link" value="link">
+        <label for="link">Links to reach out to them</label>
+      </div>
+      <div class="req-row">
+        <input type="checkbox" name="request" id="pitch" value="pitch">
+        <label for="pitch">Text to copy to send to them</label>
+      </div>
+      <div class="req-row">
+        <input type="checkbox" name="request" id="review" value="review">
+        <label for="review">Tells how probable it is that the company will accept</label>
+      </div>
+    </div>
+
+    <button type="button" onclick="sendData()">Done</button>
+  </div>
+
+  <script>
+    const container = document.getElementById("my-list-container");
+    const dataElements = document.querySelectorAll(".backend-item");
+
+    dataElements.forEach(element => {
+        const itemString = element.textContent;
+
+        // Create your layout box
+        const boxDiv = document.createElement("div");
+        boxDiv.className = "company-widget-card";
+
+        // Created listItem variable first, then assigned text and class
+        const listItem = document.createElement("li");
+        listItem.className = "company-widget-text";
+        listItem.textContent = itemString;
+
+        // Assemble and append the elements
+        boxDiv.appendChild(listItem);
+        container.appendChild(boxDiv);
+    });
+
+    function sendData() {
+        const currentItems = [];
+        document.querySelectorAll(".company-widget-text").forEach(el => {
+            currentItems.push(el.textContent.trim());
+        });
+
+        const payload = {
+            items: currentItems,
+            options: {
+                list: document.getElementById("list").checked,
+                link: document.getElementById("link").checked,
+                pitch: document.getElementById("pitch").checked,
+                review: document.getElementById("review").checked
+            }
+        };
+
+        fetch('/process-final-selection', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+        // --- FIX IS RIGHT HERE: SWITCH FROM JSON TO PLAIN TEXT HTML ---
+        .then(res => res.text())
+        .then(htmlPageContent => {
+            // Force your browser window to display the fresh template
+            document.open();
+            document.write(htmlPageContent);
+            document.close();
+        })
+        .catch(err => console.error("Error drawing template view:", err));
+    }
+  </script>
+</body>
+</html>

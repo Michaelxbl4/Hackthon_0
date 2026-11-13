@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Describe Your Product</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0E1F1A;
+    --panel: #123027;
+    --panel-edge: #1D4A3B;
+    --text: #EAF3ED;
+    --muted: #8FB4A4;
+    --accent: #E8B36A;
+    --accent-dim: rgba(232,179,106,0.18);
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background:
+      radial-gradient(circle at 20% 15%, rgba(232,179,106,0.06), transparent 45%),
+      radial-gradient(circle at 85% 80%, rgba(31,90,70,0.35), transparent 50%),
+      var(--bg);
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+  }
+
+  .wrap{
+    width: 100%;
+    max-width: 640px;
+  }
+
+  .topbar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .eyebrow{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .eyebrow::before{
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-dim);
+  }
+
+  /* Model selector */
+  .model-select{
+    position: relative;
+  }
+
+  .model-select select{
+    appearance: none;
+    -webkit-appearance: none;
+    background: linear-gradient(180deg, #143528, #0F281F);
+    border: 1px solid var(--panel-edge);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.02em;
+    padding: 8px 30px 8px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .model-select select:hover{
+    border-color: rgba(232,179,106,0.45);
+  }
+
+  .model-select select:focus{
+    border-color: rgba(232,179,106,0.55);
+    box-shadow: 0 0 0 4px var(--accent-dim);
+  }
+
+  .model-select::after{
+    content: "";
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    border-right: 1.5px solid var(--muted);
+    border-bottom: 1.5px solid var(--muted);
+    transform: translateY(-65%) rotate(45deg);
+    pointer-events: none;
+  }
+
+  .model-select select option{
+    background: #143528;
+    color: var(--text);
+  }
+
+  /* API key box */
+  .apikey-box{
+    position: relative;
+    margin-bottom: 20px;
+  }
+
+  .apikey-box label{
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .apikey-field{
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(180deg, #143528, #0F281F);
+    border: 1px solid var(--panel-edge);
+    border-radius: 12px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .apikey-field:focus-within{
+    border-color: rgba(232,179,106,0.55);
+    box-shadow: 0 0 0 4px var(--accent-dim);
+  }
+
+  .apikey-field input{
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13.5px;
+    letter-spacing: 0.02em;
+    padding: 12px 44px 12px 14px;
+    min-width: 0;
+  }
+
+  .apikey-field input::placeholder{
+    color: #5C8272;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: normal;
+  }
+
+  .apikey-toggle{
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  .apikey-toggle:hover{
+    background: var(--accent-dim);
+    color: var(--accent);
+  }
+
+  .apikey-toggle svg{
+    width: 17px;
+    height: 17px;
+  }
+
+  .apikey-note{
+    margin-top: 8px;
+    font-size: 12px;
+    color: #5C8272;
+    line-height: 1.5;
+  }
+
+  /* Product link box (plain field, no toggle button) */
+  .link-box{
+    position: relative;
+    margin-bottom: 20px;
+  }
+
+  .link-box label{
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .link-field{
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(180deg, #143528, #0F281F);
+    border: 1px solid var(--panel-edge);
+    border-radius: 12px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .link-field:focus-within{
+    border-color: rgba(232,179,106,0.55);
+    box-shadow: 0 0 0 4px var(--accent-dim);
+  }
+
+  .link-field input{
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13.5px;
+    letter-spacing: 0.02em;
+    padding: 12px 14px;
+    min-width: 0;
+  }
+
+  .link-field input::placeholder{
+    color: #5C8272;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: normal;
+  }
+
+  /* Token slider */
+  .tokens-box{
+    margin-bottom: 28px;
+  }
+
+  .tokens-label-row{
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+
+  .tokens-box label{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .tokens-value{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    background: var(--accent-dim);
+    padding: 3px 10px;
+    border-radius: 999px;
+    min-width: 56px;
+    text-align: center;
+  }
+
+  .tokens-track-wrap{
+    position: relative;
+    padding: 0 3px;
+  }
+
+  .tokens-track-bg{
+    position: absolute;
+    top: 50%;
+    left: 3px;
+    right: 3px;
+    height: 4px;
+    border-radius: 999px;
+    background: #1D4A3B;
+    transform: translateY(-50%);
+  }
+
+  .tokens-track-fill{
+    position: absolute;
+    top: 50%;
+    left: 3px;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--accent);
+    transform: translateY(-50%);
+    transition: width 0.15s ease;
+    pointer-events: none;
+  }
+
+  .tokens-marks{
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 26px;
+  }
+
+  .tokens-mark{
+    position: relative;
+    z-index: 2;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #143528, #0F281F);
+    border: 2px solid var(--panel-edge);
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .tokens-mark:hover{
+    border-color: rgba(232,179,106,0.6);
+    transform: scale(1.08);
+  }
+
+  .tokens-mark.active{
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-dim), 0 4px 10px -2px rgba(0,0,0,0.5);
+    transform: scale(1.1);
+  }
+
+  .tokens-mark:focus-visible{
+    outline: none;
+    box-shadow: 0 0 0 4px var(--accent-dim);
+  }
+
+  .tokens-ticks{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: #5C8272;
+  }
+
+  .tokens-ticks span{
+    width: 26px;
+    text-align: center;
+    transition: color 0.15s ease;
+  }
+
+  .tokens-ticks span.active{
+    color: var(--accent);
+  }
+
+  @media (max-width: 480px){
+    .tokens-mark{ width: 22px; height: 22px; }
+    .tokens-marks{ height: 22px; }
+  }
+
+  h1{
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: clamp(26px, 4vw, 34px);
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    margin: 0 0 12px;
+  }
+
+  p.sub{
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.6;
+    margin: 0 0 36px;
+    max-width: 50ch;
+  }
+
+  form{
+    position: relative;
+  }
+
+  .field{
+    position: relative;
+    background: linear-gradient(180deg, #143528, #0F281F);
+    border: 1px solid var(--panel-edge);
+    border-radius: 18px;
+    padding: 20px 64px 56px 20px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .field:focus-within{
+    border-color: rgba(232,179,106,0.55);
+    box-shadow: 0 0 0 4px var(--accent-dim), 0 18px 40px -20px rgba(0,0,0,0.6);
+  }
+
+  textarea{
+    width: 100%;
+    min-height: 96px;
+    resize: vertical;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15.5px;
+    line-height: 1.6;
+    padding: 0;
+  }
+
+  textarea::placeholder{
+    color: #5C8272;
+  }
+
+  .hint{
+    position: absolute;
+    left: 20px;
+    bottom: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: #5C8272;
+    letter-spacing: 0.02em;
+  }
+
+  button.submit-btn{
+    position: absolute;
+    right: 14px;
+    bottom: 14px;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 6px 18px -6px rgba(232,179,106,0.6);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  }
+
+  button.submit-btn:hover{
+    transform: translateY(-1px) scale(1.04);
+    box-shadow: 0 10px 22px -6px rgba(232,179,106,0.75);
+  }
+
+  button.submit-btn:active{
+    transform: translateY(0) scale(0.97);
+  }
+
+  button.submit-btn svg{
+    width: 18px;
+    height: 18px;
+  }
+
+  @media (max-width: 480px){
+    .field{ padding: 16px 56px 52px 16px; }
+    button.submit-btn{ width: 38px; height: 38px; right: 10px; bottom: 10px; }
+    .topbar{ flex-wrap: wrap; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    button.submit-btn, .field, .apikey-field, .link-field, .tokens-track-fill, .tokens-mark{ transition: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="eyebrow">Product Intake</div>
+      <div class="model-select">
+        <select id="model" name="model" form="intake-form" aria-label="Choose model">
+          <option value="gemini-2.5-flash">gemini-2.5-flash</option>
+          <option value="gemini-3.1-flash-lite">gemini-3.1-flash-lite</option>
+          <option value="gemini-3.5-flash">gemini-3.5-flash</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="apikey-box">
+      <label for="api_key">API key </label>
+      <div class="apikey-field">
+        <input type="password" id="api_key" name="api_key" form="intake-form" placeholder="Paste your API key" autocomplete="off" spellcheck="false" value="No" /><!--using sesion but in flask currect set up they disappear after each signout anyways -->
+        <button type="button" class="apikey-toggle" id="apikeyToggle" aria-label="Show API key">
+          <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2 12S5.5 5 12 5s10 7 10 7-3.5 7-10 7S2 12 2 12Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/>
+          </svg>
+        </button>
+      </div>
+      <p class="apikey-note">Add multiple keys separated by a ',' if you want to</p>
+    </div>
+
+    <div class="link-box">
+      <label for="product_link">Product link</label>
+      <div class="link-field">
+        <input type="url" id="product_link" name="product_link" form="intake-form" placeholder="https://yourproduct.com" autocomplete="off" spellcheck="false" />
+      </div>
+    </div>
+
+    <div class="tokens-box">
+      <div class="tokens-label-row">
+        <label for="max_tokens">Max output tokens</label>
+        <span class="tokens-value" id="tokensValue">2500</span>
+      </div>
+      <input type="hidden" id="max_tokens" name="max_tokens" form="intake-form" value="2500" />
+      <div class="tokens-track-wrap">
+        <div class="tokens-track-bg"></div>
+        <div class="tokens-track-fill" id="tokensFill"></div>
+        <div class="tokens-marks" id="tokensMarks">
+          <button type="button" class="tokens-mark" data-value="1500" aria-label="1500 tokens"></button>
+          <button type="button" class="tokens-mark" data-value="2000" aria-label="2000 tokens"></button>
+          <button type="button" class="tokens-mark active" data-value="2500" aria-label="2500 tokens"></button>
+          <button type="button" class="tokens-mark" data-value="3000" aria-label="3000 tokens"></button>
+          <button type="button" class="tokens-mark" data-value="3500" aria-label="3500 tokens"></button>
+          <button type="button" class="tokens-mark" data-value="4000" aria-label="4000 tokens"></button>
+        </div>
+      </div>
+      <div class="tokens-ticks" id="tokensTicks">
+        <span data-value="1500">1500</span>
+        <span data-value="2000">2000</span>
+        <span data-value="2500" class="active">2500</span>
+        <span data-value="3000">3000</span>
+        <span data-value="3500">3500</span>
+        <span data-value="4000">4000</span>
+      </div>
+    </div>
+
+    <h1>Tell us what your product does</h1>
+    <p class="sub">List the features you can provide, or give a short overview of the product. We'll use this to generate a clear summary.</p>
+
+    <form id="intake-form" action="{{ url_for('read_form') }}" method="post">
+      <div class="field">
+        <textarea id="prompt" name="prompt_" placeholder="e.g. A scheduling tool that syncs across calendars, sends reminders, and lets teams book shared rooms..." required></textarea>
+        <span class="hint">Shift + Enter for a new line</span>
+        <button type="submit" class="submit-btn" aria-label="Submit product details">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="#0E1F1A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    const apikeyInput = document.getElementById('api_key');
+    const apikeyToggle = document.getElementById('apikeyToggle');
+    const eyeIcon = document.getElementById('eyeIcon');
+
+    apikeyToggle.addEventListener('click', () => {
+      const isHidden = apikeyInput.type === 'password';
+      apikeyInput.type = isHidden ? 'text' : 'password';
+      apikeyToggle.setAttribute('aria-label', isHidden ? 'Hide API key' : 'Show API key');
+      eyeIcon.innerHTML = isHidden
+        ? '<path d="M3 3l18 18M10.6 10.6a3 3 0 0 0 4.24 4.24M9.5 5.2A10.9 10.9 0 0 1 12 5c6.5 0 10 7 10 7a13.6 13.6 0 0 1-3.1 3.9M6.1 6.1C3.6 7.9 2 12 2 12s3.5 7 10 7c1.3 0 2.5-.25 3.6-.7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>'
+        : '<path d="M2 12S5.5 5 12 5s10 7 10 7-3.5 7-10 7S2 12 2 12Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/>';
+    });
+
+    // Token slider
+    const tokenValues = [1500, 2000, 2500, 3000, 3500, 4000];
+    const tokensInput = document.getElementById('max_tokens');
+    const tokensValueLabel = document.getElementById('tokensValue');
+    const tokensFill = document.getElementById('tokensFill');
+    const tokensMarks = document.querySelectorAll('.tokens-mark');
+    const tokensTicks = document.querySelectorAll('.tokens-ticks span');
+
+    function setTokens(value){
+      tokensInput.value = value;
+      tokensValueLabel.textContent = value;
+
+      const index = tokenValues.indexOf(value);
+      const percent = (index / (tokenValues.length - 1)) * 100;
+      tokensFill.style.width = `${percent}%`;
+
+      tokensMarks.forEach(mark => {
+        mark.classList.toggle('active', Number(mark.dataset.value) === value);
+      });
+      tokensTicks.forEach(tick => {
+        tick.classList.toggle('active', Number(tick.dataset.value) === value);
+      });
+    }
+
+    tokensMarks.forEach(mark => {
+      mark.addEventListener('click', () => setTokens(Number(mark.dataset.value)));
+    });
+
+    // Initialize fill position on load
+    setTokens(Number(tokensInput.value));
+  </script>
+</body>
+</html>
